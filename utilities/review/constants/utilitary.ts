@@ -1,5 +1,6 @@
 import { isHex } from "viem";
 import { Hex } from "viem";
+import { registryHelper, ThemeMode } from "@/components/Pages/ProgramRegistry/helper";
 
 export const addPrefixToIPFSLink = (link: string) => {
   if (link.startsWith("ipfs://")) {
@@ -15,4 +16,8 @@ export function validateHex(potentialHex: string | Hex): Hex {
   } else {
     throw new TypeError(`Invalid hex value: ${potentialHex}`);
   }
+}
+
+export function getNetworkImage(network: string, themeMode: ThemeMode) {
+  return registryHelper.networkImages[network.toLowerCase()][themeMode];
 }

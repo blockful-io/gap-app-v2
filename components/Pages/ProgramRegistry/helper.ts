@@ -381,6 +381,11 @@ const organizations = [
   "Zilliqa",
 ];
 
+export enum ThemeMode {
+  Light = "light",
+  Dark = "dark",
+}
+
 const networkImages: Record<
   string,
   {
@@ -566,27 +571,14 @@ const categories = [
   "Yield Farming",
   "Infrastructure",
 ];
-const grantTypes = [
-  "Direct Grants",
-  "Bounties",
-  "Retro Funding",
-  "Quadratic Funding",
-];
-const platformsUsed = [
-  "Gitcoin",
-  "Questbook",
-  "Charmverse",
-  "GitHub",
-  "Notion",
-  "Custom",
-];
+const grantTypes = ["Direct Grants", "Bounties", "Retro Funding", "Quadratic Funding"];
+const platformsUsed = ["Gitcoin", "Questbook", "Charmverse", "GitHub", "Notion", "Custom"];
 
 const status = ["Active", "Inactive"];
 
 const grantSizes = [0, 250000];
 
-const supportedNetworks =
-  process.env.NEXT_PUBLIC_ENV === "production" ? 42161 : 11155111;
+const supportedNetworks = process.env.NEXT_PUBLIC_ENV === "production" ? 42161 : 11155111;
 
 export const registryHelper = {
   networks,
@@ -599,4 +591,5 @@ export const registryHelper = {
   platformsUsed,
   status,
   supportedNetworks,
+  ThemeMode,
 };
