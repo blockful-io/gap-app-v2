@@ -3,7 +3,8 @@ import { ReadMore } from "@/utilities/ReadMore";
 import Image from "next/image";
 import { FC, useMemo, useRef } from "react";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { registryHelper } from "./helper";
+import { registryHelper, ThemeMode } from "./helper";
+import { getNetworkImage } from "@/utilities/review/constants/utilitary";
 import { ExternalLink } from "@/components/Utilities/ExternalLink";
 import { Discord2Icon, Twitter2Icon } from "@/components/Icons";
 import { DiscussionIcon } from "@/components/Icons/Discussion";
@@ -108,39 +109,39 @@ export const ProgramList: FC<ProgramListProps> = ({ grantPrograms, selectProgram
                         width={20}
                         height={20}
                         src="/icons/globe.svg"
-                        alt={grant.metadata?.socialLinks?.website}
+                        alt={grant.metadata.socialLinks.website}
                       />
                       <Image
                         width={20}
                         height={20}
                         className="w-5 h-5 text-black dark:text-white hidden dark:block"
                         src="/icons/globe-white.svg"
-                        alt={grant.metadata?.socialLinks?.website}
+                        alt={grant.metadata.socialLinks.website}
                       />
                     </ExternalLink>
                   ) : null}
                   {grant.metadata?.socialLinks?.twitter ? (
-                    <ExternalLink href={grant.metadata?.socialLinks?.twitter} className="w-max">
+                    <ExternalLink href={grant.metadata.socialLinks.twitter} className="w-max">
                       <Twitter2Icon className="w-5 h-5 text-black dark:text-white" />
                     </ExternalLink>
                   ) : null}
                   {grant.metadata?.socialLinks?.discord ? (
-                    <ExternalLink href={grant.metadata?.socialLinks?.discord} className="w-max">
+                    <ExternalLink href={grant.metadata.socialLinks.discord} className="w-max">
                       <Discord2Icon className="w-5 h-5 text-black dark:text-white" />
                     </ExternalLink>
                   ) : null}
                   {grant.metadata?.socialLinks?.forum ? (
-                    <ExternalLink href={grant.metadata?.socialLinks?.forum} className="w-max">
+                    <ExternalLink href={grant.metadata.socialLinks.forum} className="w-max">
                       <DiscussionIcon className="w-5 h-5 text-black dark:text-white" />
                     </ExternalLink>
                   ) : null}
                   {grant.metadata?.socialLinks?.blog ? (
-                    <ExternalLink href={grant.metadata?.socialLinks?.blog} className="w-max">
+                    <ExternalLink href={grant.metadata.socialLinks.blog} className="w-max">
                       <BlogIcon className="w-5 h-5 text-black dark:text-white" />
                     </ExternalLink>
                   ) : null}
                   {grant.metadata?.socialLinks?.orgWebsite ? (
-                    <ExternalLink href={grant.metadata?.socialLinks?.orgWebsite} className="w-max">
+                    <ExternalLink href={grant.metadata.socialLinks.orgWebsite} className="w-max">
                       <OrganizationIcon className="w-5 h-5 text-black dark:text-white" />
                     </ExternalLink>
                   ) : null}
@@ -218,14 +219,14 @@ export const ProgramList: FC<ProgramListProps> = ({ grantPrograms, selectProgram
                             <Image
                               width={20}
                               height={20}
-                              src={registryHelper.networkImages[network.toLowerCase()].light}
+                              src={getNetworkImage(network, ThemeMode.Light)}
                               alt={network}
                               className="rounded-full w-5 h-5  dark:hidden"
                             />
                             <Image
                               width={20}
                               height={20}
-                              src={registryHelper.networkImages[network.toLowerCase()].dark}
+                              src={getNetworkImage(network, ThemeMode.Dark)}
                               alt={network}
                               className="rounded-full w-5 h-5  hidden dark:block"
                             />
@@ -425,7 +426,7 @@ export const ProgramList: FC<ProgramListProps> = ({ grantPrograms, selectProgram
           return (
             <div className="whitespace-nowrap px-3 py-5 text-sm text-black dark:text-zinc-300">
               {grant.metadata?.socialLinks?.grantsSite ? (
-                <ExternalLink href={grant.metadata?.socialLinks?.grantsSite}>
+                <ExternalLink href={grant.metadata.socialLinks.grantsSite}>
                   <Button>Apply</Button>
                 </ExternalLink>
               ) : null}
