@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { useReviewStore } from "@/store/review";
 import { useSearchParams } from "next/navigation";
 
-import { Hex } from "viem";
 import { arbitrum } from "viem/chains";
 import { useAccount, useSwitchChain } from "wagmi";
 
@@ -15,7 +14,7 @@ import { DynamicStarsReview } from "./DynamicStarsReview";
 
 import { AbiCoder } from "ethers";
 import { KARMA_EAS_SCHEMA_UID } from "@/utilities/review/constants/constants";
-import { addPrefixToIPFSLink } from "@/utilities/review/constants/utilitary";
+import { addPrefixToIPFSLink, validateHex } from "@/utilities/review/constants/utilitary";
 import { submitAttest } from "@/utilities/review/attest";
 import { Spinner } from "@/components/Utilities/Spinner";
 
@@ -92,7 +91,7 @@ export const CardNewReview = () => {
       BigInt(0),
       false,
       grantUID,
-      encodedData as Hex,
+      validateHex(encodedData),
     );
 
     if (response instanceof Error) {
