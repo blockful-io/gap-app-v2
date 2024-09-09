@@ -1,5 +1,6 @@
 import { getWalletClient } from "@wagmi/core";
 import { config } from "@/utilities/wagmi/config";
+import { validateHex } from "@/utilities/review/constants/utilitary";
 import { createPublicClient, encodeFunctionData, Hex, http, type TransactionReceipt } from "viem";
 import { sendTransaction, estimateGas, waitForTransactionReceipt } from "viem/actions";
 import { arbitrum } from "viem/chains";
@@ -95,8 +96,8 @@ export async function submitAttest(
   });
   try {
     gasLimit = await estimateGas(publicClient, {
-      account: from as Hex,
-      to: ARB_ONE_EAS as Hex,
+      account: validateHex(from),
+      to: validateHex(ARB_ONE_EAS),
       data: encodedData,
       value: BigInt(0),
     });
@@ -106,8 +107,8 @@ export async function submitAttest(
 
   try {
     const transactionHash = await sendTransaction(walletClient, {
-      account: from as Hex,
-      to: ARB_ONE_EAS as Hex,
+      account: validateHex(from),
+      to: validateHex(ARB_ONE_EAS),
       gasLimit: gasLimit,
       data: encodedData,
       value: BigInt(0),
