@@ -219,14 +219,14 @@ export const ProgramList: FC<ProgramListProps> = ({ grantPrograms, selectProgram
                             <Image
                               width={20}
                               height={20}
-                              src={getNetworkImage(network, ThemeMode.Light)}
+                              src={getNetworkImage(network)[ThemeMode.Light]}
                               alt={network}
                               className="rounded-full w-5 h-5  dark:hidden"
                             />
                             <Image
                               width={20}
                               height={20}
-                              src={getNetworkImage(network, ThemeMode.Dark)}
+                              src={getNetworkImage(network)[ThemeMode.Dark]}
                               alt={network}
                               className="rounded-full w-5 h-5  hidden dark:block"
                             />

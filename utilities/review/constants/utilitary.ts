@@ -18,6 +18,6 @@ export function validateHex(potentialHex: string | Hex): Hex {
   }
 }
 
-export function getNetworkImage(network: string, themeMode: ThemeMode) {
-  return registryHelper.networkImages[network.toLowerCase()][themeMode];
+export function getNetworkImage(network: string) {
+  return registryHelper.networkImages[network.toLowerCase()];
 }
