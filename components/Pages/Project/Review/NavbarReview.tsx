@@ -12,6 +12,7 @@ import { ChevronDown } from "@/components/Icons";
 import { formatDate } from "@/utilities/formatDate";
 import { getGrantStories } from "@/utilities/review/getGrantStories";
 import { SCORER_DECIMALS } from "@/utilities/review/constants/constants";
+import tailwindConfig from "@/tailwind.config";
 
 export const NavbarReview = () => {
   const isStarSelected = useReviewStore((state: any) => state.isStarSelected);
@@ -65,11 +66,18 @@ export const NavbarReview = () => {
                 <div className="w-full flex flex-col items-center sm:px-14 px-4">
                   <StarReviewIcon
                     props={{
-                      className: `w-20 h-20 ${isStarSelected === index && "text-[#004EEB]"}`,
+                      className: `w-20 h-20 ${isStarSelected === index && "text-strongblue"}`,
                     }}
                     pathProps={{
                       className: "cursor-pointer",
-                      fill: `${isStarSelected === index && "#004EEB"} `,
+                      fill: `${
+                        isStarSelected === index &&
+                        tailwindConfig.theme.extend.colors.brand.strongblue
+                      } `,
+                      stroke: `${
+                        isStarSelected === index &&
+                        tailwindConfig.theme.extend.colors.brand.strongblue
+                      } `,
                       onClick: () => {
                         setBadges(null);
                         handleToggleReviewSelected(index);
@@ -79,7 +87,7 @@ export const NavbarReview = () => {
                   <p>{(Number(storie.averageScore) / 10 ** SCORER_DECIMALS).toFixed(1)}</p>
                   {isStarSelected === index && (
                     <div>
-                      <ChevronDown className="text-[#004EEB]" />
+                      <ChevronDown className="text-strongblue" />
                     </div>
                   )}
                   {index < stories.length - 1 && (

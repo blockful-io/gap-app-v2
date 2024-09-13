@@ -46,8 +46,14 @@ export const CardNewReview = () => {
     }
   }, [activeBadges]);
 
-  // Score of the new review
-  const handleSetRating = (index: number, rating: number) => {
+  /**
+   * Updates the rating for a specific badge.
+   *
+   * @param index - The index of the badge.
+   * @param rating - The new rating for the badge.
+   * @returns void
+   */
+  const updateBadgeRating = (index: number, rating: number) => {
     if (rating >= 1 || rating <= 5) {
       const updatededBadges = [...badgeScores];
       updatededBadges[index] = rating;
@@ -58,7 +64,12 @@ export const CardNewReview = () => {
   };
 
   /**
-   * Handles the submission of a review to submitAttest.
+   * Handles the submission of a new review.
+   *
+   * This function checks if the user is connected to an address and connected to the Arbitrum chain.
+   * It also validates that the number of active badges matches the number of badge scores.
+   * Then, it encodes the data using the AbiCoder and calls the submitAttest function to send the review to the blockchain.
+   * If the submission is successful, it resets the state and displays a success message.
    *
    */
   const handleSubmitReview = async () => {
@@ -70,12 +81,14 @@ export const CardNewReview = () => {
     if (chainId != arbitrum.id) {
       switchChain({ chainId: arbitrum.id });
       toast.error("Must connect to Arbitrum to review");
+      return;
     }
 
     if (activeBadges.length !== badgeScores.length) {
       toast.error(
         "Different number of badges and scores. Code should be unreachable, contact the team!",
       );
+      return;
     }
 
     // Encode the data
@@ -134,7 +147,7 @@ export const CardNewReview = () => {
                       <DynamicStarsReview
                         totalStars={5}
                         rating={badgeScores[index]}
-                        setRating={(rating) => handleSetRating(index, rating)}
+                        setRating={(rating) => updateBadgeRating(index, rating)}
                         mode={ReviewMode.WRITE}
                       />
                     </div>

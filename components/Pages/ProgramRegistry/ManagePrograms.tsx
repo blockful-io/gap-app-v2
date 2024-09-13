@@ -13,20 +13,14 @@ import AddProgram from "@/components/Pages/ProgramRegistry/AddProgram";
 import { useAccount, useSwitchChain } from "wagmi";
 import { useAuthStore } from "@/store/auth";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import {
-  ChevronLeftIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/solid";
+import { ChevronLeftIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { PAGES } from "@/utilities/pages";
 import { envVars } from "@/utilities/enviromentVars";
 import { getWalletClient } from "@wagmi/core";
 import { useSigner, walletClientToSigner } from "@/utilities/eas-wagmi-utils";
 import { AlloBase } from "@show-karma/karma-gap-sdk/core/class/GrantProgramRegistry/Allo";
-import {
-  Address,
-  ApplicationMetadata,
-} from "@show-karma/karma-gap-sdk/core/class/types/allo";
+import { Address, ApplicationMetadata } from "@show-karma/karma-gap-sdk/core/class/types/allo";
 import { AlloContracts } from "@show-karma/karma-gap-sdk/core/consts";
 import Pagination from "@/components/Utilities/Pagination";
 import debounce from "lodash.debounce";
@@ -115,15 +109,13 @@ export const ManagePrograms = () => {
     throttleMs: 500,
   });
 
-  const [selectedProgram, setSelectedProgram] = useState<GrantProgram | null>(
-    null
-  );
+  const [selectedProgram, setSelectedProgram] = useState<GrantProgram | null>(null);
 
   useEffect(() => {
     const searchProgramById = async (id: string) => {
       try {
         const [data, error] = await fetchData(
-          INDEXER.REGISTRY.FIND_BY_ID(id, registryHelper.supportedNetworks)
+          INDEXER.REGISTRY.FIND_BY_ID(id, registryHelper.supportedNetworks),
         );
         if (data) {
           setSelectedProgram(data);
@@ -145,9 +137,7 @@ export const ManagePrograms = () => {
   const getGrantPrograms = async () => {
     try {
       const baseUrl = INDEXER.REGISTRY.GET_ALL;
-      const queryParams = `?isValid=${tab}&limit=${pageSize}&offset=${
-        (page - 1) * pageSize
-      }`;
+      const queryParams = `?isValid=${tab}&limit=${pageSize}&offset=${(page - 1) * pageSize}`;
       const searchParam = searchInput ? `&name=${searchInput}` : "";
       const ownerParam = address && !isRegistryAdmin ? `&owner=${address}` : "";
       const url = isRegistryAdmin
@@ -195,7 +185,7 @@ export const ManagePrograms = () => {
 
   const approveOrReject = async (
     program: GrantProgram,
-    value: "accepted" | "rejected" | "pending"
+    value: "accepted" | "rejected" | "pending",
   ) => {
     const messageDict = {
       accepted: "approving",
@@ -204,8 +194,7 @@ export const ManagePrograms = () => {
     };
     try {
       const id = program._id.$oid;
-      const { programId, createdAtBlock, chainID, metadata, createdByAddress } =
-        program;
+      const { programId, createdAtBlock, chainID, metadata, createdByAddress } = program;
       if (value === "accepted" && !programId && !createdAtBlock) {
         if (!isConnected || !isAuth) {
           openConnectModal?.();
@@ -223,11 +212,7 @@ export const ManagePrograms = () => {
         const _currentTimestamp = Math.floor(new Date().getTime() / 1000);
         const matchinFundAmount = 0;
 
-        const allo = new AlloBase(
-          walletSigner as any,
-          envVars.IPFS_TOKEN,
-          chainID as number
-        );
+        const allo = new AlloBase(walletSigner as any, envVars.IPFS_TOKEN, chainID as number);
 
         const profileId = envVars.PROFILE_ID;
 
@@ -261,13 +246,11 @@ export const ManagePrograms = () => {
 
         const [currentManagers, fetchError] = await fetchData(
           INDEXER.REGISTRY.MANAGERS(profileId, chainID as number),
-          "GET"
+          "GET",
         );
         if (fetchError) throw new Error("Error fetching current managers");
 
-        const managers = currentManagers.concat([
-          program.createdByAddress as Address,
-        ]);
+        const managers = currentManagers.concat([program.createdByAddress as Address]);
 
         const args: any = {
           profileId,
@@ -307,7 +290,7 @@ export const ManagePrograms = () => {
           },
           {},
           {},
-          true
+          true,
         );
         if (error) throw new Error("Error approving program");
         changeStepperStep("indexed");
@@ -321,7 +304,7 @@ export const ManagePrograms = () => {
           },
           {},
           {},
-          true
+          true,
         );
         if (error) throw new Error(`Program failed when updating to ${value}`);
       }
@@ -372,11 +355,9 @@ export const ManagePrograms = () => {
         {isEditing ? null : (
           <div className="flex flex-row gap-2 justify-start w-full">
             <Link href={PAGES.REGISTRY.ROOT}>
-              <Button className="flex flex-row gap-2 bg-transparent hover:bg-transparent text-[#004EEB] text-sm p-0">
+              <Button className="flex flex-row gap-2 bg-transparent hover:bg-transparent text-strongblue text-sm p-0">
                 <ChevronLeftIcon className="w-4 h-4" />
-                <p className="border-b border-b-[#004EEB]">
-                  Back to Programs Explorer
-                </p>
+                <p className="border-b border-b-strongblue">Back to Programs Explorer</p>
               </Button>
             </Link>
           </div>
@@ -428,8 +409,7 @@ export const ManagePrograms = () => {
                       setTab("pending");
                     }}
                     style={{
-                      backgroundColor:
-                        tab === "pending" ? "white" : "transparent",
+                      backgroundColor: tab === "pending" ? "white" : "transparent",
                       color: tab === "pending" ? "black" : "gray",
                     }}
                   >
@@ -442,8 +422,7 @@ export const ManagePrograms = () => {
                       setTab("accepted");
                     }}
                     style={{
-                      backgroundColor:
-                        tab === "accepted" ? "white" : "transparent",
+                      backgroundColor: tab === "accepted" ? "white" : "transparent",
                       color: tab === "accepted" ? "black" : "gray",
                     }}
                   >
@@ -456,8 +435,7 @@ export const ManagePrograms = () => {
                       setTab("rejected");
                     }}
                     style={{
-                      backgroundColor:
-                        tab === "rejected" ? "white" : "transparent",
+                      backgroundColor: tab === "rejected" ? "white" : "transparent",
                       color: tab === "rejected" ? "black" : "gray",
                     }}
                   >

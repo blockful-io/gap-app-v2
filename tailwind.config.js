@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 const defaultTheme = require("tailwindcss/defaultTheme");
-import colors from "tailwindcss/colors";
 
 // Custom color with css variable color in __theme_color.scss
 function customColors(cssVar) {
@@ -15,7 +14,7 @@ function customColors(cssVar) {
   };
 }
 
-module.exports = {
+const tailwindConfig = {
   darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -62,6 +61,7 @@ module.exports = {
         brand: {
           blue: "#4C6FFF",
           darkblue: "#101828",
+          strongblue: "#004EEB",
         },
         tremor: {
           brand: {
@@ -160,3 +160,5 @@ module.exports = {
     require("autoprefixer"),
   ],
 };
+
+export default tailwindConfig;

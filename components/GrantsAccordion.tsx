@@ -20,7 +20,7 @@ export const GrantsAccordion: FC<GrantsAccordionProps> = ({ children }) => {
         onClick={toggleAccordion}
       >
         <p className="text-base font-semibold">Select grant</p>
-        <div className="rounded-lg text-[#004EEB] p-2 bg-[#EEF4FF]">
+        <div className="rounded-lg text-strongblue p-2 bg-[#EEF4FF]">
           {isOpen ? (
             <ChevronDownIcon className="w-5 h-5" />
           ) : (
@@ -28,9 +28,7 @@ export const GrantsAccordion: FC<GrantsAccordionProps> = ({ children }) => {
           )}
         </div>
       </button>
-      {isOpen ? (
-        <div className="mt-4 flex flex-col gap-2">{children}</div>
-      ) : null}
+      {isOpen ? <div className="mt-4 flex flex-col gap-2">{children}</div> : null}
     </div>
   );
 };

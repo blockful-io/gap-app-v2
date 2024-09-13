@@ -45,8 +45,7 @@ const labelStyle = "text-sm font-bold text-[#344054] dark:text-zinc-100";
 const inputStyle =
   "mt-1 w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100";
 
-const urlRegex =
-  /^((https?):\/\/)?([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}(\/.*)?$/;
+const urlRegex = /^((https?):\/\/)?([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}(\/.*)?$/;
 
 const createProgramSchema = z.object({
   name: z.string().min(3, { message: MESSAGES.REGISTRY.FORM.NAME }),
@@ -65,7 +64,7 @@ const createProgramSchema = z.object({
       {
         message: "Start date must be before the end date",
         path: ["startsAt"],
-      }
+      },
     ),
   website: z
     .string()
@@ -188,9 +187,7 @@ export default function AddProgram({
           ? new Date(programToEdit?.metadata?.endsAt)
           : undefined,
       },
-      amountDistributed: programToEdit?.metadata?.amountDistributedToDate as
-        | number
-        | undefined,
+      amountDistributed: programToEdit?.metadata?.amountDistributedToDate as number | undefined,
       budget: programToEdit?.metadata?.programBudget as number | undefined,
       minGrantSize: programToEdit?.metadata?.minGrantSize as number | undefined,
       maxGrantSize: programToEdit?.metadata?.maxGrantSize as number | undefined,
@@ -222,7 +219,7 @@ export default function AddProgram({
       | "networks"
       | "grantTypes"
       | "organizations"
-      | "platformsUsed"
+      | "platformsUsed",
   ) => {
     const oldArray = watch(fieldName);
     let newArray = [...oldArray];
@@ -309,7 +306,7 @@ export default function AddProgram({
         },
         {},
         {},
-        true
+        true,
       );
       if (error) {
         throw new Error("Error creating program");
@@ -322,7 +319,7 @@ export default function AddProgram({
         </p>,
         {
           duration: 20000,
-        }
+        },
       );
       router.push(PAGES.REGISTRY.ROOT);
     } catch (error) {
@@ -391,33 +388,21 @@ export default function AddProgram({
       };
 
       const isSameAddress =
-        programToEdit?.createdByAddress?.toLowerCase() ===
-        address?.toLowerCase();
+        programToEdit?.createdByAddress?.toLowerCase() === address?.toLowerCase();
 
       const permissionToEditOnChain = !!(
         programToEdit?.txHash &&
         (isSameAddress || isRegistryAdmin)
       );
       if (permissionToEditOnChain) {
-        const allo = new AlloBase(
-          walletSigner as any,
-          envVars.IPFS_TOKEN,
-          chainSelected as number
-        );
+        const allo = new AlloBase(walletSigner as any, envVars.IPFS_TOKEN, chainSelected as number);
         const hasRegistry = await allo
-          .updatePoolMetadata(
-            programToEdit?.programId as string,
-            metadata,
-            changeStepperStep
-          )
+          .updatePoolMetadata(programToEdit?.programId as string, metadata, changeStepperStep)
           .then(async (res) => {
             let retries = 1000;
             changeStepperStep("indexing");
             while (retries > 0) {
-              await fetchData(
-                INDEXER.REGISTRY.GET_ALL +
-                  `?programId=${programToEdit?.programId}`
-              )
+              await fetchData(INDEXER.REGISTRY.GET_ALL + `?programId=${programToEdit?.programId}`)
                 .then(async ([res]) => {
                   const hasUpdated =
                     new Date(programToEdit?.updatedAt) <
@@ -457,10 +442,9 @@ export default function AddProgram({
           },
           {},
           {},
-          true
+          true,
         );
-        if (error)
-          throw new Error("An error occurred while editing the program");
+        if (error) throw new Error("An error occurred while editing the program");
       }
       toast.success("Program updated successfully!");
       await refreshPrograms?.().then(() => {
@@ -496,20 +480,16 @@ export default function AddProgram({
             {programToEdit ? (
               <Button
                 onClick={backTo}
-                className="flex flex-row gap-2 bg-transparent hover:bg-transparent text-[#004EEB] text-sm p-0"
+                className="flex flex-row gap-2 bg-transparent hover:bg-transparent text-strongblue text-sm p-0"
               >
                 <ChevronLeftIcon className="w-4 h-4" />
-                <p className="border-b border-b-[#004EEB]">
-                  Back to Manage Programs
-                </p>
+                <p className="border-b border-b-strongblue">Back to Manage Programs</p>
               </Button>
             ) : (
               <Link href={PAGES.REGISTRY.ROOT}>
-                <Button className="flex flex-row gap-2 bg-transparent hover:bg-transparent text-[#004EEB] text-sm p-0">
+                <Button className="flex flex-row gap-2 bg-transparent hover:bg-transparent text-strongblue text-sm p-0">
                   <ChevronLeftIcon className="w-4 h-4" />
-                  <p className="border-b border-b-[#004EEB]">
-                    Back to programs
-                  </p>
+                  <p className="border-b border-b-strongblue">Back to programs</p>
                 </Button>
               </Link>
             )}
@@ -527,10 +507,7 @@ export default function AddProgram({
             </p>
           </div>
         </div>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="gap-4 rounded-lg w-full flex-col flex"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="gap-4 rounded-lg w-full flex-col flex">
           <div className="flex flex-col w-full gap-6">
             <div className="flex flex-col w-full gap-6 border-b border-b-[#98A2B3] pb-10">
               <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-4">
@@ -544,9 +521,7 @@ export default function AddProgram({
                     placeholder="Ex: Super cool Program"
                     {...register("name")}
                   />
-                  <p className="text-base text-red-400">
-                    {errors.name?.message}
-                  </p>
+                  <p className="text-base text-red-400">{errors.name?.message}</p>
                 </div>
                 <div className="flex w-full flex-col  gap-1">
                   <label htmlFor="program-grants-site" className={labelStyle}>
@@ -558,9 +533,7 @@ export default function AddProgram({
                     placeholder="Ex: https://program.xyz/"
                     {...register("grantsSite")}
                   />
-                  <p className="text-base text-red-400">
-                    {errors.grantsSite?.message}
-                  </p>
+                  <p className="text-base text-red-400">{errors.grantsSite?.message}</p>
                 </div>
               </div>
               <div className="flex w-full flex-row items-center justify-between gap-4">
@@ -570,22 +543,16 @@ export default function AddProgram({
                     control={control}
                     render={({ field, formState, fieldState }) => (
                       <div className="flex w-full flex-col gap-2">
-                        <label className={labelStyle}>
-                          Start date (optional)
-                        </label>
+                        <label className={labelStyle}>Start date (optional)</label>
                         <div>
                           <Popover className="relative">
                             <Popover.Button
                               className={cn(
                                 inputStyle,
-                                "w-max text-sm flex-row flex gap-2 items-center bg-white dark:bg-zinc-800 px-4 py-2 rounded-md"
+                                "w-max text-sm flex-row flex gap-2 items-center bg-white dark:bg-zinc-800 px-4 py-2 rounded-md",
                               )}
                             >
-                              {field.value ? (
-                                formatDate(field.value)
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
+                              {field.value ? formatDate(field.value) : <span>Pick a date</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Popover.Button>
                             <Popover.Panel className="absolute z-10 border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 mt-4 rounded-md">
@@ -599,8 +566,7 @@ export default function AddProgram({
                                   field.onChange(e);
                                 }}
                                 disabled={(date) => {
-                                  if (date < new Date("2000-01-01"))
-                                    return true;
+                                  if (date < new Date("2000-01-01")) return true;
                                   return false;
                                 }}
                                 initialFocus
@@ -608,9 +574,7 @@ export default function AddProgram({
                             </Popover.Panel>
                           </Popover>
                         </div>
-                        <p className="text-base text-red-400">
-                          {errors.dates?.startsAt?.message}
-                        </p>
+                        <p className="text-base text-red-400">{errors.dates?.startsAt?.message}</p>
                       </div>
                     )}
                   />
@@ -621,22 +585,16 @@ export default function AddProgram({
                     control={control}
                     render={({ field, formState, fieldState }) => (
                       <div className="flex w-full flex-col gap-2">
-                        <label className={labelStyle}>
-                          End date (optional)
-                        </label>
+                        <label className={labelStyle}>End date (optional)</label>
                         <div>
                           <Popover className="relative">
                             <Popover.Button
                               className={cn(
                                 inputStyle,
-                                "w-max text-sm flex-row flex gap-2 items-center bg-white dark:bg-zinc-800 px-4 py-2 rounded-md"
+                                "w-max text-sm flex-row flex gap-2 items-center bg-white dark:bg-zinc-800 px-4 py-2 rounded-md",
                               )}
                             >
-                              {field.value ? (
-                                formatDate(field.value)
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
+                              {field.value ? formatDate(field.value) : <span>Pick a date</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Popover.Button>
                             <Popover.Panel className="absolute z-10 border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 mt-4 rounded-md">
@@ -650,8 +608,7 @@ export default function AddProgram({
                                   field.onChange(e);
                                 }}
                                 disabled={(date) => {
-                                  if (date < new Date("2000-01-01"))
-                                    return true;
+                                  if (date < new Date("2000-01-01")) return true;
                                   const startsAt = watch("dates.startsAt");
                                   if (startsAt && date < startsAt) return true;
                                   return false;
@@ -661,9 +618,7 @@ export default function AddProgram({
                             </Popover.Panel>
                           </Popover>
                         </div>
-                        <p className="text-base text-red-400">
-                          {errors.dates?.endsAt?.message}
-                        </p>
+                        <p className="text-base text-red-400">{errors.dates?.endsAt?.message}</p>
                       </div>
                     )}
                   />
@@ -674,10 +629,7 @@ export default function AddProgram({
                   Description *
                 </label>
                 <textarea
-                  className={cn(
-                    inputStyle,
-                    "bg-transparent min-h-[120px] max-h-[360px]"
-                  )}
+                  className={cn(inputStyle, "bg-transparent min-h-[120px] max-h-[360px]")}
                   value={watch("description")}
                   onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
                     setValue("description", event.target.value || "", {
@@ -686,9 +638,7 @@ export default function AddProgram({
                   }
                   placeholder="Please provide a description of this program"
                 />
-                <p className="text-base text-red-400">
-                  {errors.description?.message}
-                </p>
+                <p className="text-base text-red-400">{errors.description?.message}</p>
               </div>
               <div className="grid grid-cols-4  max-sm:grid-cols-1 max-md:grid-cols-2 gap-4 justify-between">
                 <div className="flex w-full flex-col gap-1">
@@ -697,17 +647,13 @@ export default function AddProgram({
                   </label>
                   <SearchDropdown
                     list={registryHelper.categories}
-                    onSelectFunction={(value: string) =>
-                      onChangeGeneric(value, "categories")
-                    }
+                    onSelectFunction={(value: string) => onChangeGeneric(value, "categories")}
                     type={"Categories"}
                     selected={watch("categories")}
                     prefixUnselected="Select"
                     buttonClassname="w-full max-w-full"
                   />
-                  <p className="text-base text-red-400">
-                    {errors.categories?.message}
-                  </p>
+                  <p className="text-base text-red-400">{errors.categories?.message}</p>
                 </div>
                 <div className="flex w-full flex-col  gap-1">
                   <label htmlFor="program-organizations" className={labelStyle}>
@@ -715,18 +661,14 @@ export default function AddProgram({
                   </label>
                   <SearchDropdown
                     list={registryHelper.organizations}
-                    onSelectFunction={(value: string) =>
-                      onChangeGeneric(value, "organizations")
-                    }
+                    onSelectFunction={(value: string) => onChangeGeneric(value, "organizations")}
                     type={"Organizations"}
                     selected={watch("organizations")}
                     prefixUnselected="Select"
                     buttonClassname="w-full max-w-full"
                     canAdd
                   />
-                  <p className="text-base text-red-400">
-                    {errors.organizations?.message}
-                  </p>
+                  <p className="text-base text-red-400">{errors.organizations?.message}</p>
                 </div>
                 <div className="flex w-full flex-col  gap-1">
                   <label htmlFor="program-ecosystems" className={labelStyle}>
@@ -734,18 +676,14 @@ export default function AddProgram({
                   </label>
                   <SearchDropdown
                     list={registryHelper.ecosystems}
-                    onSelectFunction={(value: string) =>
-                      onChangeGeneric(value, "ecosystems")
-                    }
+                    onSelectFunction={(value: string) => onChangeGeneric(value, "ecosystems")}
                     type={"Ecosystems"}
                     selected={watch("ecosystems")}
                     prefixUnselected="Select"
                     buttonClassname="w-full max-w-full"
                     canAdd
                   />
-                  <p className="text-base text-red-400">
-                    {errors.ecosystems?.message}
-                  </p>
+                  <p className="text-base text-red-400">{errors.ecosystems?.message}</p>
                 </div>
                 <div className="flex w-full flex-col  gap-1">
                   <label htmlFor="program-networks" className={labelStyle}>
@@ -755,18 +693,14 @@ export default function AddProgram({
                   <SearchDropdown
                     list={registryHelper.networks}
                     imageDictionary={registryHelper.networkImages}
-                    onSelectFunction={(value: string) =>
-                      onChangeGeneric(value, "networks")
-                    }
+                    onSelectFunction={(value: string) => onChangeGeneric(value, "networks")}
                     type={"Networks"}
                     selected={watch("networks")}
                     prefixUnselected="Select"
                     buttonClassname="w-full max-w-full"
                     canAdd
                   />
-                  <p className="text-base text-red-400">
-                    {errors.networks?.message}
-                  </p>
+                  <p className="text-base text-red-400">{errors.networks?.message}</p>
                 </div>
                 <div className="flex w-full flex-col  gap-1">
                   <label htmlFor="program-types" className={labelStyle}>
@@ -774,17 +708,13 @@ export default function AddProgram({
                   </label>
                   <SearchDropdown
                     list={registryHelper.grantTypes}
-                    onSelectFunction={(value: string) =>
-                      onChangeGeneric(value, "grantTypes")
-                    }
+                    onSelectFunction={(value: string) => onChangeGeneric(value, "grantTypes")}
                     type={"Mechanisms"}
                     selected={watch("grantTypes")}
                     prefixUnselected="Select"
                     buttonClassname="w-full max-w-full"
                   />
-                  <p className="text-base text-red-400">
-                    {errors.grantTypes?.message}
-                  </p>
+                  <p className="text-base text-red-400">{errors.grantTypes?.message}</p>
                 </div>
                 <div className="flex w-full flex-col  gap-1">
                   <label htmlFor="program-types" className={labelStyle}>
@@ -792,9 +722,7 @@ export default function AddProgram({
                   </label>
                   <SearchDropdown
                     list={registryHelper.platformsUsed}
-                    onSelectFunction={(value: string) =>
-                      onChangeGeneric(value, "platformsUsed")
-                    }
+                    onSelectFunction={(value: string) => onChangeGeneric(value, "platformsUsed")}
                     type={"Platforms"}
                     selected={watch("platformsUsed")}
                     prefixUnselected="Select"
@@ -802,9 +730,7 @@ export default function AddProgram({
                     shouldSort={false}
                     canAdd
                   />
-                  <p className="text-base text-red-400">
-                    {errors.platformsUsed?.message}
-                  </p>
+                  <p className="text-base text-red-400">{errors.platformsUsed?.message}</p>
                 </div>
                 {programToEdit && (
                   <div className="flex w-full flex-col justify-between gap-2">
@@ -852,15 +778,10 @@ export default function AddProgram({
                   type="number"
                   {...register("budget")}
                 />
-                <p className="text-base text-red-400">
-                  {errors.budget?.message}
-                </p>
+                <p className="text-base text-red-400">{errors.budget?.message}</p>
               </div>
               <div className="flex w-full flex-col  gap-1">
-                <label
-                  htmlFor="program-amount-distributed"
-                  className={labelStyle}
-                >
+                <label htmlFor="program-amount-distributed" className={labelStyle}>
                   Amount distributed to date
                 </label>
                 <input
@@ -870,9 +791,7 @@ export default function AddProgram({
                   type="number"
                   {...register("amountDistributed")}
                 />
-                <p className="text-base text-red-400">
-                  {errors.amountDistributed?.message}
-                </p>
+                <p className="text-base text-red-400">{errors.amountDistributed?.message}</p>
               </div>
               <div className="flex w-full flex-col  gap-1">
                 <label htmlFor="program-grants-issued" className={labelStyle}>
@@ -885,9 +804,7 @@ export default function AddProgram({
                   placeholder="Ex: 60"
                   {...register("grantsToDate")}
                 />
-                <p className="text-base text-red-400">
-                  {errors.grantsToDate?.message}
-                </p>
+                <p className="text-base text-red-400">{errors.grantsToDate?.message}</p>
               </div>
               <div className="flex w-full flex-col  gap-1">
                 <label htmlFor="program-min-grant-size" className={labelStyle}>
@@ -900,9 +817,7 @@ export default function AddProgram({
                   placeholder="Ex: 80000"
                   {...register("minGrantSize")}
                 />
-                <p className="text-base text-red-400">
-                  {errors.minGrantSize?.message}
-                </p>
+                <p className="text-base text-red-400">{errors.minGrantSize?.message}</p>
               </div>
               <div className="flex w-full flex-col  gap-1">
                 <label htmlFor="program-max-grant-size" className={labelStyle}>
@@ -915,9 +830,7 @@ export default function AddProgram({
                   placeholder="Ex: 80000"
                   {...register("maxGrantSize")}
                 />
-                <p className="text-base text-red-400">
-                  {errors.maxGrantSize?.message}
-                </p>
+                <p className="text-base text-red-400">{errors.maxGrantSize?.message}</p>
               </div>
             </div>
             <div className="grid grid-cols-3 max-sm:grid-cols-1 w-full gap-6  pb-10">
@@ -936,9 +849,7 @@ export default function AddProgram({
                     {...register("twitter")}
                   />
                 </div>
-                <p className="text-base text-red-400">
-                  {errors.twitter?.message}
-                </p>
+                <p className="text-base text-red-400">{errors.twitter?.message}</p>
               </div>
               <div className="flex w-full flex-col gap-2 justify-between">
                 <label htmlFor="program-discord" className={labelStyle}>
@@ -955,9 +866,7 @@ export default function AddProgram({
                     {...register("discord")}
                   />
                 </div>
-                <p className="text-base text-red-400">
-                  {errors.discord?.message}
-                </p>
+                <p className="text-base text-red-400">{errors.discord?.message}</p>
               </div>
               <div className="flex w-full flex-col gap-2 justify-between">
                 <label htmlFor="program-blog" className={labelStyle}>
@@ -991,9 +900,7 @@ export default function AddProgram({
                     {...register("forum")}
                   />
                 </div>
-                <p className="text-base text-red-400">
-                  {errors.forum?.message}
-                </p>
+                <p className="text-base text-red-400">{errors.forum?.message}</p>
               </div>
               <div className="flex w-full flex-col gap-2 justify-between">
                 <label htmlFor="program-org" className={labelStyle}>
@@ -1010,9 +917,7 @@ export default function AddProgram({
                     {...register("orgWebsite")}
                   />
                 </div>
-                <p className="text-base text-red-400">
-                  {errors.orgWebsite?.message}
-                </p>
+                <p className="text-base text-red-400">{errors.orgWebsite?.message}</p>
               </div>
 
               <div className="flex w-full flex-col gap-2 justify-between">
@@ -1030,9 +935,7 @@ export default function AddProgram({
                     {...register("bugBounty")}
                   />
                 </div>
-                <p className="text-base text-red-400">
-                  {errors.bugBounty?.message}
-                </p>
+                <p className="text-base text-red-400">{errors.bugBounty?.message}</p>
               </div>
             </div>
           </div>

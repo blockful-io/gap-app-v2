@@ -1,4 +1,5 @@
 import { StarIcon } from "@/components/Icons/Star";
+import tailwindConfig from "@/tailwind.config";
 import type { FC } from "react";
 import React, { useState } from "react";
 
@@ -8,11 +9,7 @@ interface DynamicStarsProps {
   setRating: (rating: number | undefined) => void;
 }
 
-export const DynamicStars: FC<DynamicStarsProps> = ({
-  totalStars = 10,
-  rating,
-  setRating,
-}) => {
+export const DynamicStars: FC<DynamicStarsProps> = ({ totalStars = 10, rating, setRating }) => {
   const [hover, setHover] = useState<number | null>(null);
 
   return (
@@ -33,16 +30,15 @@ export const DynamicStars: FC<DynamicStarsProps> = ({
 
             <StarIcon
               pathProps={{
-                className:
-                  "transition-all ease-in-out duration-300 cursor-pointer",
+                className: "transition-all ease-in-out duration-300 cursor-pointer",
                 style: {
                   fill:
                     currentRating <= (hover || rating || 0)
-                      ? "#004EEB"
+                      ? tailwindConfig.theme.extend.colors.brand.strongblue
                       : "none",
                   stroke:
                     currentRating <= (hover || rating || 0)
-                      ? "#004EEB"
+                      ? tailwindConfig.theme.extend.colors.brand.strongblue
                       : "#98A2B3",
                 },
                 onMouseEnter: () => setHover(currentRating),
