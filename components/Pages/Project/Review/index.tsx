@@ -98,8 +98,7 @@ export const ReviewSection = ({ grant }: GrantAllReviewsProps) => {
                     </h2>
                     {isConnected &&
                     project?.recipient &&
-                    address &&
-                    isAddressEqual(project.recipient, address) ? ( // Check if the address is equal to the grant recipient address
+                    address /** This conditional enables any user to review grant projects  */ ? (
                       <Button
                         disabled={false}
                         onClick={handleReviewButton}
