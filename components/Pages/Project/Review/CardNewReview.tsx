@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 
 import { Hex } from "viem";
 import { arbitrum } from "viem/chains";
-import { useAccount, useSwitchChain, useWalletClient } from "wagmi";
+import { useAccount } from "wagmi";
 
 import { ReviewMode, Badge } from "@/types/review";
 import { Button } from "@/components/Utilities/Button";
@@ -18,7 +18,6 @@ import { KARMA_EAS_SCHEMA_UID } from "@/utilities/review/constants/constants";
 import { addPrefixToIPFSLink } from "@/utilities/review/constants/utilitary";
 import { submitAttest } from "@/utilities/review/attest";
 import { Spinner } from "@/components/Utilities/Spinner";
-import { config } from "@/utilities/wagmi/config";
 
 export const CardNewReview = () => {
   const setIsOpenReview = useReviewStore((state: any) => state.setIsOpenReview);
@@ -34,7 +33,6 @@ export const CardNewReview = () => {
 
   const { address, chainId } = useAccount();
   const searchParams = useSearchParams();
-  const { data: walletClient } = useWalletClient({ config });
 
   useEffect(() => {
     // Fill the starts with a score of 1 when the badges render
@@ -60,22 +58,10 @@ export const CardNewReview = () => {
 
   /**
    * Handles the submission of a review to submitAttest.
-   *
    */
   const handleSubmitReview = async () => {
     if (!address) {
       toast.error("Must connect to submit a review");
-      return;
-    }
-
-    if (!walletClient) {
-      toast.error("Error getting wallet client for wallet interaction. Please try again.");
-      return;
-    }
-
-    if (chainId != arbitrum.id) {
-      toast.error("Must connect to Arbitrum to review");
-      await walletClient.switchChain({ id: arbitrum.id });
       return;
     }
 
@@ -100,7 +86,6 @@ export const CardNewReview = () => {
       false,
       grantUID,
       encodedData as Hex,
-      walletClient,
     );
 
     if (response instanceof Error) {

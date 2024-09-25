@@ -27,6 +27,7 @@ import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
 import { createHash } from "crypto";
 import { envVars } from "@/utilities/enviromentVars";
 import { IGrantResponse } from "@show-karma/karma-gap-sdk/core/class/karma-indexer/api/types";
+import { arbitrum } from "viem/chains";
 
 interface ReviewFormAnonProps {
   grant: IGrantResponse;
@@ -56,7 +57,7 @@ const FormSchema = z.object({
       rating: z.number().min(1, { message: MESSAGES.GRANT.REVIEW.FORM.RATING }),
       answer: z.string().optional(),
       questionId: z.string(),
-    })
+    }),
   ),
   infos: z
     .object({
@@ -76,7 +77,7 @@ const FormSchema = z.object({
       {
         message: "This answer is required.",
         path: ["choice"],
-      }
+      },
     )
     .refine(
       (data) => {
@@ -88,7 +89,7 @@ const FormSchema = z.object({
       {
         message: "Insert your name.",
         path: ["name"],
-      }
+      },
     )
     .refine(
       (data) => {
@@ -100,7 +101,7 @@ const FormSchema = z.object({
       {
         message: "Select at least one category.",
         path: ["categories"],
-      }
+      },
     )
     .refine(
       (data) => {
@@ -112,7 +113,7 @@ const FormSchema = z.object({
       {
         message: "Insert your e-mail.",
         path: ["email"],
-      }
+      },
     ),
 });
 
@@ -130,21 +131,15 @@ export default function AnonKarmaAlert() {
     <div className="my-2 shadow-inner rounded-xl bg-yellow-50 p-4">
       <div className="flex">
         <div className="flex-shrink-0">
-          <ExclamationTriangleIcon
-            className="h-5 w-5 text-yellow-400"
-            aria-hidden="true"
-          />
+          <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />
         </div>
         <div className="ml-3">
-          <h3 className="text-sm font-medium text-yellow-800">
-            Attention needed
-          </h3>
+          <h3 className="text-sm font-medium text-yellow-800">Attention needed</h3>
           <div className="mt-2 text-sm text-yellow-700">
             <p>
-              You are about to review this grant anonymously. You may start
-              reviewing the grant but you will have to prove you are a grantee
-              of this grant by generating a valid zkProof using{" "}
-              <span className="">AnonKarma</span> in order to submit a review.
+              You are about to review this grant anonymously. You may start reviewing the grant but
+              you will have to prove you are a grantee of this grant by generating a valid zkProof
+              using <span className="">AnonKarma</span> in order to submit a review.
             </p>
           </div>
         </div>
@@ -178,12 +173,8 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
   }, []);
 
   const orderedQuestions = [
-    ...allQuestions.filter(
-      (question) => !additionalQuestion(question.questionId, question?.query)
-    ),
-    ...allQuestions.filter((question) =>
-      additionalQuestion(question.questionId, question?.query)
-    ),
+    ...allQuestions.filter((question) => !additionalQuestion(question.questionId, question?.query)),
+    ...allQuestions.filter((question) => additionalQuestion(question.questionId, question?.query)),
   ];
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -208,18 +199,14 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
     },
   });
 
-  const saveReview = async ({
-    questions: dataQuestions,
-    infos,
-  }: z.infer<typeof FormSchema>) => {
+  const saveReview = async ({ questions: dataQuestions, infos }: z.infer<typeof FormSchema>) => {
     setIsSaving(true);
     try {
       const mountAnswers = dataQuestions.map((item: any) => {
         if (
           additionalQuestion(
-            allQuestions.find((question) => question.id === item.id)
-              ?.questionId,
-            allQuestions.find((question) => question.id === item.id)?.query
+            allQuestions.find((question) => question.id === item.id)?.questionId,
+            allQuestions.find((question) => question.id === item.id)?.query,
           )
         ) {
           return {
@@ -235,16 +222,12 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
         };
       });
 
-      await fetchData(
-        INDEXER.GRANTS.REVIEWS.REVIEWER.SAVE(address as string),
-        "PUT",
-        {
-          choice: infos.choice === "yes",
-          name: infos.choice === "yes" ? infos.name : undefined,
-          email: infos.choice === "yes" ? infos.email : undefined,
-          categories: infos.choice === "yes" ? infos.categories : undefined,
-        }
-      ).catch((error) => {
+      await fetchData(INDEXER.GRANTS.REVIEWS.REVIEWER.SAVE(address as string), "PUT", {
+        choice: infos.choice === "yes",
+        name: infos.choice === "yes" ? infos.name : undefined,
+        email: infos.choice === "yes" ? infos.email : undefined,
+        categories: infos.choice === "yes" ? infos.categories : undefined,
+      }).catch((error) => {
         console.log(error);
       });
 
@@ -263,12 +246,12 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
           message: messageHash,
           callbackUrl,
           scope: "1",
-        })
+        }),
       )}`;
 
       if (
         confirm(
-          `Generating proof: You will be sent to the following AnonKarma url to generate your proof anonymously...\n\n${anonKarmaUrl}`
+          `Generating proof: You will be sent to the following AnonKarma url to generate your proof anonymously...\n\n${anonKarmaUrl}`,
         )
       ) {
         console.log("User confirmed the proof generation, opening url...");
@@ -281,8 +264,8 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
       toast.error(
         MESSAGES.GRANT.REVIEW.ERROR(
           project?.details?.data?.title as string,
-          grant.details?.data?.title as string
-        )
+          grant.details?.data?.title as string,
+        ),
       );
     } finally {
       setIsSaving(false);
@@ -302,16 +285,16 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
           toast.success(
             MESSAGES.GRANT.REVIEW.SUCCESS(
               project?.details?.data?.title as string,
-              grant.details?.data?.title as string
-            )
+              grant.details?.data?.title as string,
+            ),
           );
           setHasSubmitted(true);
         } else {
           toast.error(
             MESSAGES.GRANT.REVIEW.ANON_REVIEW_ALREADY_EXISTS(
               project?.details?.data?.title as string,
-              grant.details?.data?.title as string
-            )
+              grant.details?.data?.title as string,
+            ),
           );
         }
       })
@@ -320,8 +303,8 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
         toast.error(
           MESSAGES.GRANT.REVIEW.ERROR(
             project?.details?.data?.title as string,
-            grant.details?.data?.title as string
-          )
+            grant.details?.data?.title as string,
+          ),
         );
       });
   }
@@ -350,10 +333,7 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
           className="flex w-full flex-col gap-3  rounded-xl"
         >
           {orderedQuestions.map((question, index) => (
-            <div
-              key={`${question.query}${question.id}`}
-              className="flex w-full flex-col gap-2"
-            >
+            <div key={`${question.query}${question.id}`} className="flex w-full flex-col gap-2">
               <div className="flex w-full flex-row items-center justify-between gap-3 max-lg:flex-col max-lg:items-start">
                 <div
                   data-color-mode="light"
@@ -363,24 +343,17 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
                     className="text-base font-semibold text-black dark:text-zinc-100"
                     components={{
                       strong: ({ children, ...props }) => {
-                        return (
-                          <ExternalLink {...props}>{children}</ExternalLink>
-                        );
+                        return <ExternalLink {...props}>{children}</ExternalLink>;
                       },
                       a: ({ children, ...props }) => {
-                        return (
-                          <ExternalLink {...props}>{children}</ExternalLink>
-                        );
+                        return <ExternalLink {...props}>{children}</ExternalLink>;
                       },
                     }}
                     source={question.query}
                   />
                 </div>
 
-                {additionalQuestion(
-                  question.questionId,
-                  question?.query
-                ) ? null : (
+                {additionalQuestion(question.questionId, question?.query) ? null : (
                   <div className="flex flex-col gap-2 p-3 max-lg:p-0">
                     <div
                       className="flex w-full max-w-max flex-row items-center gap-3 rounded dark:bg-transparent px-2.5 py-3"
@@ -396,24 +369,17 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
                         totalStars={5}
                         rating={form.watch("questions")[index]?.rating || 0}
                         setRating={(rating) => {
-                          form.setValue(
-                            `questions.${index}.rating`,
-                            rating || 0
-                          );
+                          form.setValue(`questions.${index}.rating`, rating || 0);
                         }}
                       />
-                      {+(form.getValues("questions")[index]?.rating || 0) >
-                      0 ? (
+                      {+(form.getValues("questions")[index]?.rating || 0) > 0 ? (
                         <p className="text-xl font-semibold text-gray-600 dark:text-zinc-100">
                           {form.getValues("questions")[index]?.rating}
                         </p>
                       ) : null}
                     </div>
                     <ErrorMessage
-                      message={
-                        form.formState.errors?.questions?.[index]?.rating
-                          ?.message
-                      }
+                      message={form.formState.errors?.questions?.[index]?.rating?.message}
                     />
                   </div>
                 )}
@@ -426,9 +392,7 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
                   {...form.register(`questions.${index}.answer`)}
                 />
                 <ErrorMessage
-                  message={
-                    form.formState.errors?.questions?.[index]?.answer?.message
-                  }
+                  message={form.formState.errors?.questions?.[index]?.answer?.message}
                 />
               </div>
             </div>
@@ -438,8 +402,8 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
               id="infos.choice"
               className="max-w-2xl text-base font-semibold text-black dark:text-zinc-100"
             >
-              Would you be interested in reviewing grants across web3 ecosystem?
-              Compensation will be provided for your efforts. *
+              Would you be interested in reviewing grants across web3 ecosystem? Compensation will
+              be provided for your efforts. *
             </label>
             <div className="flex flex-row items-center gap-8">
               <label className="flex flex-row items-center gap-2">
@@ -461,9 +425,7 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
                 No
               </label>
             </div>
-            <ErrorMessage
-              message={form.formState.errors?.infos?.choice?.message}
-            />
+            <ErrorMessage message={form.formState.errors?.infos?.choice?.message} />
           </div>
           {choice === "yes" ? (
             <div className="flex flex-col gap-3">
@@ -507,18 +469,14 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
                     {({ open }) => (
                       <div className="flex flex-col items-start gap-2">
                         <Listbox.Label className="text-base font-semibold text-black dark:text-zinc-100">
-                          What type of grants would you like to review? Choose
-                          all that apply *
+                          What type of grants would you like to review? Choose all that apply *
                         </Listbox.Label>
                         <div className="relative flex-1 w-56">
                           <Listbox.Button className="relative w-full dark:bg-zinc-800 dark:text-zinc-200 dark:ring-zinc-700 cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900  ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6">
                             {categories && categories.length > 0 ? (
                               <p className="flex flex-row gap-1">
                                 {categories?.length}
-                                <span>
-                                  {pluralize("category", categories?.length)}{" "}
-                                  selected
-                                </span>
+                                <span>{pluralize("category", categories?.length)} selected</span>
                               </p>
                             ) : (
                               <p>Categories</p>
@@ -547,7 +505,7 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
                                       active
                                         ? "bg-gray-100 text-black dark:text-gray-300 dark:bg-zinc-900"
                                         : "text-gray-900 dark:text-gray-200 ",
-                                      "relative cursor-default select-none py-2 pl-3 pr-9 transition-all ease-in-out duration-200"
+                                      "relative cursor-default select-none py-2 pl-3 pr-9 transition-all ease-in-out duration-200",
                                     )
                                   }
                                   value={category}
@@ -556,10 +514,8 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
                                     <>
                                       <span
                                         className={cn(
-                                          selected
-                                            ? "font-semibold"
-                                            : "font-normal",
-                                          "block truncate"
+                                          selected ? "font-semibold" : "font-normal",
+                                          "block truncate",
                                         )}
                                       >
                                         {category}
@@ -569,13 +525,10 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
                                         <span
                                           className={cn(
                                             "text-primary-600 dark:text-primary-400",
-                                            "absolute inset-y-0 right-0 flex items-center pr-4"
+                                            "absolute inset-y-0 right-0 flex items-center pr-4",
                                           )}
                                         >
-                                          <CheckIcon
-                                            className="h-5 w-5"
-                                            aria-hidden="true"
-                                          />
+                                          <CheckIcon className="h-5 w-5" aria-hidden="true" />
                                         </span>
                                       ) : null}
                                     </>
@@ -609,9 +562,7 @@ export const ReviewFormAnon: FC<ReviewFormAnonProps> = ({
         <section>
           <div className="w-full">
             <p className="text-lg font-bold text-left mb-2">AnonKarma Proof</p>
-            <p className="mb-2">
-              Your saved answers are ready to be submitted.{" "}
-            </p>
+            <p className="mb-2">Your saved answers are ready to be submitted. </p>
             {/* <div>
               <h3>Your saved answers</h3>
               <p>{localStorage.getItem("mountAnswers")}</p>

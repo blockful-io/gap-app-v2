@@ -1,17 +1,17 @@
-import { getWalletClient } from "@wagmi/core";
-import { config } from "@/utilities/wagmi/config";
 import {
   createPublicClient,
+  createWalletClient,
   encodeFunctionData,
   Hex,
   http,
-  WalletClient,
   type TransactionReceipt,
 } from "viem";
-import { sendTransaction, waitForTransactionReceipt } from "viem/actions";
+import { waitForTransactionReceipt } from "viem/actions";
 import { arbitrum } from "viem/chains";
 import { ARB_ONE_EAS } from "./constants/constants";
-import toast from "react-hot-toast";
+import { envVars } from "../enviromentVars";
+import { getWalletClient } from "@wagmi/core";
+import { config } from "../wagmi/config";
 
 export interface AttestationRequestData {
   recipient: Hex;
@@ -40,7 +40,6 @@ export async function submitAttest(
   revocable: boolean,
   refUID: Hex,
   data: Hex,
-  walletClient: WalletClient,
 ): Promise<TransactionReceipt | Error> {
   const attestationRequestData: AttestationRequestData = {
     recipient: recipient,
@@ -92,13 +91,15 @@ export async function submitAttest(
     args: [AttestationRequest],
   });
 
-  if (walletClient.chain?.id !== arbitrum.id) {
+  const walletClient = await getWalletClient(config);
+
+  if (!walletClient || walletClient.chain?.id !== arbitrum.id) {
     walletClient.switchChain({ id: arbitrum.id });
     return Error("Must connect to Arbitrum to review");
   }
 
   try {
-    const transactionHash = await sendTransaction(walletClient, {
+    const transactionHash = await walletClient.sendTransaction({
       /**
        * 10 million gas units is a lot, but based on the gas units
        * used in the attest function, it is enough for all transactions.
